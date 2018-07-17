@@ -18,18 +18,20 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     // this.playNote()(300)(2);
-    const series: Note[] = generateNotesSeries(27.5, 48);
+    const series: Note[] = generateNotesSeries(20);
 
     // this.playNote()(series[40].frequency)(0.5);
-    this.playBell()(series[43].frequency)(0.5);
+    this.playBell()(series[20].frequency)(3);
   }
 
   playBell() {
     return (frequency: number) => (duration: number) => {
-      // this.playNote()(frequency)(duration);
-      // this.playNote(-0.88)(2 * frequency)(duration);
-      // this.playNote(-0.9)(3 * frequency)(duration);
-      // this.playNote(-0.95)(4 * frequency)(duration);
+      const oscillators = [];
+      this.playNote(-0.3)(frequency)(duration);
+      this.playNote(-0.95)(2 * frequency)(duration);
+
+      this.playNote(-0.98)(3 * frequency)(duration);
+      this.playNote(-0.99)(4 * frequency)(duration);
       // this.playNote(-0.99)(5 * frequency)(duration);
       // this.playNote(-0.99)(6 * frequency)(duration);
       // this.playNote(-0.99)(7 * frequency)(duration);
@@ -42,15 +44,16 @@ export class AppComponent implements OnInit {
         (<any>window).webkitAudioContext)();
       const gainNode: GainNode = audioContext.createGain();
       const oscillator: OscillatorNode = audioContext.createOscillator();
-      // oscillator.connect(gainNode);
       oscillator.frequency.value = frequency; // value in hertz
       oscillator.type = "sine";
 
-      gainNode.gain.value = gain;
+      gainNode.gain.value = -1;
 
       oscillator.connect(audioContext.destination);
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
+      gainNode.gain.linearRampToValueAtTime(gain, 0.01);
+      gainNode.gain.linearRampToValueAtTime(-1, audioContext.currentTime + 2.5);
 
       oscillator.start(0);
       oscillator.stop(audioContext.currentTime + duration);
