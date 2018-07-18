@@ -4,7 +4,14 @@ export function generateNotesSeries(
   n: number,
   referenceAFrequency = 440
 ): Note[] {
-  const referenceA = { frequency: 440, pitchNames: ["A"], index: 0, octave: 4 };
+  const referenceA = {
+    frequency: 440,
+    pitchNames: ["A"],
+    index: 0,
+    octave: 4,
+    normalizedDuration: 0,
+    normalizedStart: 0
+  };
   return removeDuplicates(
     generateLowerRange(referenceA, n).concat(generateUpperRange(referenceA, n))
   );
@@ -32,7 +39,9 @@ function generateUpperRange(currentNote: Note, n, series = []): Note[] {
         incrementPitchValue
       ),
       index: currentNote.index + 1,
-      octave: 4
+      octave: 4,
+      normalizedDuration: 0,
+      normalizedStart: 0
     },
     n - 1,
     series
@@ -73,7 +82,9 @@ function generateLowerRange(currentNote: Note, n, series = []): Note[] {
         decrementPitchValue
       ),
       index: currentNote.index + 1,
-      octave: 4
+      octave: 4,
+      normalizedDuration: 0,
+      normalizedStart: 0
     },
     n - 1,
     series
