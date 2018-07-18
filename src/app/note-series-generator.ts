@@ -14,10 +14,24 @@ export function generateNotesSeries(
   };
   return removeDuplicates(
     generateLowerRange(referenceA, n).concat(generateUpperRange(referenceA, n))
-  );
+  ).map(setOctave);
 }
 
-function removeDuplicates(arr: Note[]) {
+function setOctave(note: Note) {
+  return { ...note, octave: getOctave(note.frequency) };
+}
+
+function getOctave(frequency: number) {
+  if (between(frequency, 440, 880)) {
+    return 4;
+  }
+}
+
+function between(val: number, lower: number, upper: number) {
+  return val >= lower && val < upper ? true : false;
+}
+
+function removeDuplicates(arr: Note[]): Note[] {
   if (arr.length == 0) {
     return [];
   }
@@ -27,25 +41,29 @@ function removeDuplicates(arr: Note[]) {
 }
 
 function generateUpperRange(currentNote: Note, n, series = []): Note[] {
+  series.push(currentNote);
   if (n == 0) {
     return series;
   }
-  series.push(currentNote);
   return generateUpperRange(
     {
-      frequency: currentNote.frequency * Math.pow(2, 1 / 12),
+      frequency: getNextFrequency(currentNote.frequency),
       pitchNames: getNextNameInSeries(
         currentNote.pitchNames,
         incrementPitchValue
       ),
       index: currentNote.index + 1,
-      octave: 4,
+      octave: getOctave(getNextFrequency(currentNote.frequency)),
       normalizedDuration: 0,
       normalizedStart: 0
     },
     n - 1,
     series
   );
+}
+
+function getNextFrequency(currentFrequency): number {
+  return currentFrequency * Math.pow(2, 1 / 12);
 }
 
 function getNextNameInSeries(
@@ -70,10 +88,10 @@ function decrementPitchValue(currentPitchValue: number): number {
 }
 
 function generateLowerRange(currentNote: Note, n, series = []): Note[] {
+  series.push(currentNote);
   if (n == 0) {
     return series;
   }
-  series.push(currentNote);
   return generateLowerRange(
     {
       frequency: currentNote.frequency * Math.pow(2, -1 / 12),

@@ -1,6 +1,7 @@
 import { Score } from "./score";
 import { Component, OnInit } from "@angular/core";
 import { generateNotesSeries } from "./note-series-generator";
+import { getMajorKey, getTonicScale } from "./scale-generator";
 
 export interface Note {
   frequency: number;
@@ -33,24 +34,11 @@ export class AppComponent implements OnInit {
 
   generateRun() {}
 
-  getMajorKey(chromaticSeries: Note[], key: string): Note[] {
-    switch (key) {
-      case "C":
-        return chromaticSeries.filter(n =>
-          n.pitchNames.some(pn =>
-            ["C", "D", "E", "F", "G", "A", "B"].includes(pn)
-          )
-        );
-
-      default:
-        return [];
-    }
-  }
-
   ngOnInit() {
     // this.playNote()(300)(2);
     const series: Note[] = generateNotesSeries(20);
-    const cMajor: Note[] = this.getMajorKey(series, "C");
+    const cMajorKey: Note[] = getMajorKey(series, "C");
+    const cMajorScale: Note[] = getTonicScale(cMajorKey, "C");
     // this.playNote()(series[40].frequency)(0.5);
     // this.playBell()(series[20].frequency)(3);
 
