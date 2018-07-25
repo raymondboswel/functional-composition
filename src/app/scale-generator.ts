@@ -16,9 +16,6 @@ export function getMajorKey(chromaticSeries: Note[], key: string): Note[] {
 
 export function getTonicScale(keyNotes: Note[], rootNote: string): Note[] {
   return keyNotes.slice(
-    keyNotes.findIndex(n => n.pitchNames.includes(rootNote)),
-    keyNotes.length -
-      keyNotes.reverse().findIndex(n => n.pitchNames.includes(rootNote)) +
-      1
+    keyNotes.findIndex(n => n.pitchNames.includes(rootNote))
   );
 }

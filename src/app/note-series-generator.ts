@@ -14,17 +14,39 @@ export function generateNotesSeries(
   };
   return removeDuplicates(
     generateLowerRange(referenceA, n).concat(generateUpperRange(referenceA, n))
-  ).map(setOctave);
+  );
 }
 
 function setOctave(note: Note) {
   return { ...note, octave: getOctave(note.frequency) };
 }
 
-function getOctave(frequency: number) {
+export function getOctave(frequency: number) {
+  if (between(frequency, 3520, 7040)) {
+    return 6;
+  }
+  if (between(frequency, 1760, 3520)) {
+    return 6;
+  }
+  if (between(frequency, 880, 1760)) {
+    return 5;
+  }
   if (between(frequency, 440, 880)) {
     return 4;
   }
+  if (between(frequency, 220, 440)) {
+    return 3;
+  }
+  if (between(frequency, 110, 220)) {
+    return 2;
+  }
+  if (between(frequency, 55, 110)) {
+    return 1;
+  }
+  if (between(frequency, 27.5, 55)) {
+    return 0;
+  }
+  return -1;
 }
 
 function between(val: number, lower: number, upper: number) {
@@ -80,17 +102,17 @@ function getNextNameInSeries(
 }
 
 function incrementPitchValue(currentPitchValue: number): number {
-  return currentPitchValue < 9 ? currentPitchValue + 1 : 0;
+  return currentPitchValue < 11 ? currentPitchValue + 1 : 0;
 }
 
 function decrementPitchValue(currentPitchValue: number): number {
-  return currentPitchValue == 0 ? 9 : currentPitchValue - 1;
+  return currentPitchValue == 0 ? 11 : currentPitchValue - 1;
 }
 
 function generateLowerRange(currentNote: Note, n, series = []): Note[] {
   series.push(currentNote);
   if (n == 0) {
-    return series;
+    return series.reverse();
   }
   return generateLowerRange(
     {
@@ -100,13 +122,13 @@ function generateLowerRange(currentNote: Note, n, series = []): Note[] {
         decrementPitchValue
       ),
       index: currentNote.index + 1,
-      octave: 4,
+      octave: getOctave(getNextFrequency(currentNote.frequency)),
       normalizedDuration: 0,
       normalizedStart: 0
     },
     n - 1,
     series
-  ).reverse();
+  );
 }
 
 const pitchValues = [
@@ -126,17 +148,20 @@ const pitchValues = [
 
   { pitchName: "D", pitchValue: 5 },
 
-  { pitchName: "E", pitchValue: 6 },
-  { pitchName: "Fb", pitchValue: 6 },
+  { pitchName: "D#", pitchValue: 6 },
+  { pitchName: "Eb", pitchValue: 6 },
 
-  { pitchName: "E#", pitchValue: 7 },
-  { pitchName: "F", pitchValue: 7 },
+  { pitchName: "E", pitchValue: 7 },
+  { pitchName: "Fb", pitchValue: 7 },
 
-  { pitchName: "F#", pitchValue: 8 },
-  { pitchName: "Gb", pitchValue: 8 },
+  { pitchName: "E#", pitchValue: 8 },
+  { pitchName: "F", pitchValue: 8 },
 
-  { pitchName: "G", pitchValue: 9 },
+  { pitchName: "F#", pitchValue: 9 },
+  { pitchName: "Gb", pitchValue: 9 },
 
-  { pitchName: "G#", pitchValue: 10 },
-  { pitchName: "Ab", pitchValue: 10 }
+  { pitchName: "G", pitchValue: 10 },
+
+  { pitchName: "G#", pitchValue: 11 },
+  { pitchName: "Ab", pitchValue: 11 }
 ];
