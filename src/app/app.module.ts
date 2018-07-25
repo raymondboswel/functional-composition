@@ -2,10 +2,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
+import { OdeToJoyScoreComponent } from './ode-to-joy-score/ode-to-joy-score.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    OdeToJoyScoreComponent
   ],
   imports: [
     BrowserModule
