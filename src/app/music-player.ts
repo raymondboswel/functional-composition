@@ -1,3 +1,4 @@
+import { Sound } from "./sound";
 import { Score } from "./score";
 import { ReplaySubject, Subject } from "rxjs";
 import { Note } from "./app.component";
@@ -5,73 +6,60 @@ import { generateNotesSeries } from "./note-series-generator";
 import { Measure } from "./measure";
 
 export function playPhrase(score: Score) {
-  console.log(score);
-  const s: Subject<Note> = new ReplaySubject();
+  const s: Subject<Sound> = new ReplaySubject();
+  const notes = concatMeasures(score.measures);
 
-  let notes = concatMeasures(score.measures);
+  const sounds: Sound[] = notes
+    .map(denormalizeNote()(generateNotesSeries(28))(120))
+    .reduce(notesTemporalLocationReducerFn, []);
 
-  const series: Note[] = generateNotesSeries(28);
-  console.log(notes);
-  notes[0].normalizedStart = 0;
-
-  notes = notes
-    .map(note => {
-      note.frequency = series.find(
-        refNote =>
-          refNote.octave == note.octave &&
-          refNote.pitchNames.includes(note.pitchNames[0])
-      ).frequency;
-      return note;
-    })
-    .map(denormalizeDuration()(120));
-
-  const normalizedNotes = notes.reduce((acc: Note[], note: Note) => {
-    if (acc.length == 0) {
-      return [note];
-    } else {
-      const previousNote = acc[acc.length - 1];
-      const startTime =
-        previousNote.normalizedStart + previousNote.normalizedDuration;
-      console.log(startTime);
-      note.normalizedStart = startTime;
-
-      return [...acc, note];
-    }
-  }, []);
-
-  normalizedNotes.forEach(note =>
+  sounds.forEach(sound =>
     setTimeout(() => {
-      console.log(note);
-      s.next(note);
-    }, note.normalizedStart)
+      s.next(sound);
+    }, sound.startTime)
   );
 
   const audioContext: AudioContext = new ((<any>window).AudioContext ||
     (<any>window).webkitAudioContext)();
 
   s.subscribe(note => {
-    console.log(
-      "subsc " +
-        note.pitchNames[0] +
-        ":" +
-        note.normalizedDuration +
-        ":" +
-        note.normalizedStart +
-        ":" +
-        note.frequency
-    );
-
-    playBell(audioContext)(note.frequency)(note.normalizedDuration * 0.9);
+    playBell(audioContext)(note.frequency)(note.duration * 0.9);
   });
 }
 
-export function denormalizeDuration() {
-  return (bpm: number) => (note: Note) => {
+function notesTemporalLocationReducerFn(acc: Sound[], sound: Sound) {
+  if (acc.length == 0) {
+    sound.startTime = 0;
+    return [sound];
+  } else {
+    const previousNote = acc[acc.length - 1];
+    const startTime = previousNote.startTime + previousNote.duration;
+    sound.startTime = startTime;
+
+    return [...acc, sound];
+  }
+}
+
+function denormalizeNote() {
+  return (referenceNotes: Note[]) => (bpm: number) => (note: Note): Sound => {
     return {
-      ...note,
-      normalizedDuration: ((note.normalizedDuration * bpm) / 60) * 1000
+      frequency: getFrequency(referenceNotes, note),
+      duration: denormalizeDuration(bpm, note)
     };
   };
+}
+
+export function denormalizeDuration(bpm: number, note: Note) {
+  return ((note.normalizedDuration * bpm) / 60) * 1000;
+}
+
+export function getFrequency(referenceNotes: Note[], note: Note) {
+  const frequency = referenceNotes.find(
+    refNote =>
+      refNote.octave == note.octave &&
+      refNote.pitchNames.includes(note.pitchNames[0])
+  ).frequency;
+  return frequency;
 }
 
 export function concatMeasures(measures: Measure[]): Note[] {
