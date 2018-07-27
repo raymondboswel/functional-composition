@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { Score } from "src/app/score";
 import { Measure } from "../measure";
 import { Note } from "src/app/app.component";
+import { playPhrase } from "../music-player";
 
 @Component({
   selector: "app-ode-to-joy-score",
@@ -17,6 +18,7 @@ export class OdeToJoyScoreComponent implements OnInit {
     const score: Score = {
       measures: this.sheetToScore(inputMeasures);
     };
+    playPhrase(score);
   }
   sheetToScore(sheet: Node[]): Measure[] {
     return sheet.map((measure: Node) => {
