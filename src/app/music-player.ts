@@ -33,9 +33,7 @@ function notesTemporalLocationReducerFn(acc: Sound[], sound: Sound) {
     return [sound];
   } else {
     const previousNote = acc[acc.length - 1];
-    const startTime = previousNote.startTime + previousNote.duration;
-    sound.startTime = startTime;
-
+    sound.startTime = previousNote.startTime + previousNote.duration;
     return [...acc, sound];
   }
 }
