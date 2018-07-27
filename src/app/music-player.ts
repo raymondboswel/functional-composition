@@ -7,25 +7,23 @@ import { Measure } from "./measure";
 export function playPhrase(score: Score) {
   console.log(score);
   const s: Subject<Note> = new ReplaySubject();
-  // Observable.create(() => )
-  let notes = score.measures.reduce(
-    (all: Note[], measure: Measure) => all.concat(measure.notes),
-    []
-  );
+
+  let notes = concatMeasures(score.measures);
 
   const series: Note[] = generateNotesSeries(28);
   console.log(notes);
   notes[0].normalizedStart = 0;
 
-  notes = notes.map(note => {
-    note.frequency = series.find(
-      refNote =>
-        refNote.octave == note.octave &&
-        refNote.pitchNames.includes(note.pitchNames[0])
-    ).frequency;
-    note.normalizedDuration = note.normalizedDuration * 2000;
-    return note;
-  });
+  notes = notes
+    .map(note => {
+      note.frequency = series.find(
+        refNote =>
+          refNote.octave == note.octave &&
+          refNote.pitchNames.includes(note.pitchNames[0])
+      ).frequency;
+      return note;
+    })
+    .map(denormalizeDuration()(120));
 
   const normalizedNotes = notes.reduce((acc: Note[], note: Note) => {
     if (acc.length == 0) {
@@ -65,6 +63,22 @@ export function playPhrase(score: Score) {
 
     playBell(audioContext)(note.frequency)(note.normalizedDuration * 0.9);
   });
+}
+
+export function denormalizeDuration() {
+  return (bpm: number) => (note: Note) => {
+    return {
+      ...note,
+      normalizedDuration: ((note.normalizedDuration * bpm) / 60) * 1000
+    };
+  };
+}
+
+export function concatMeasures(measures: Measure[]): Note[] {
+  return measures.reduce(
+    (all: Note[], measure: Measure) => all.concat(measure.notes),
+    []
+  );
 }
 
 export function playBell(audioContext) {
