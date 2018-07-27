@@ -74,11 +74,7 @@ export function playBell(audioContext) {
     const oscillators = [];
     playFrequency(audioContext, -0.1)(frequency)(duration);
     playFrequency(audioContext, -0.85)(2 * frequency)(duration);
-
     playFrequency(audioContext, -0.95)(3 * frequency)(duration);
-    // this.playFrequency(-0.89)(4 * frequency)(duration);
-    // this.playFrequency(-0.97)(5 * frequency)(duration);
-    // this.playFrequency(-0.99)(6 * frequency)(duration);
   };
 }
 
