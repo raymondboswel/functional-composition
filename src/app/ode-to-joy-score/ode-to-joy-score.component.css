@@ -77,7 +77,7 @@
   background-image: url("/assets/images/half-note-down.svg");
 }
 
-.half-note.a5,
+.half-note.a4,
 .half-note.g4,
 .half-note.f4,
 .half-note.e4,
@@ -114,7 +114,7 @@
   background-image: url("/assets/images/quarter-note-down.svg");
 }
 
-.quarter-note.a5,
+.quarter-note.a4,
 .quarter-note.g4,
 .quarter-note.f4,
 .quarter-note.e4,
@@ -147,7 +147,7 @@
   width: 2.83em;
 }
 
-.eighth-note.a5,
+.eighth-note.a4,
 .eighth-note.g4,
 .eighth-note.f4,
 .eighth-note.e4,
@@ -184,7 +184,7 @@
   background-image: url("/assets/images/three-eighth-note-offset-down.svg");
 }
 
-.three-eighth-note.a5,
+.three-eighth-note.a4,
 .three-eighth-note.f4,
 .three-eighth-note.d4,
 .three-eighth-note.b4 {
@@ -201,11 +201,11 @@
   grid-column: span 2;
 }
 
-.b6 {
+.b5 {
   transform: translate(0, -7em);
 }
 
-.a6 {
+.a5 {
   transform: translate(0, -6em);
 }
 
@@ -229,11 +229,11 @@
   transform: translate(0, -1em);
 }
 
-.b5 {
+.b4 {
   transform: translate(0, 0);
 }
 
-.a5 {
+.a4 {
   transform: translate(0, 1em);
 }
 
@@ -257,7 +257,7 @@
   transform: translate(0, 6em);
 }
 
-.b4 {
+.b3 {
   transform: translate(0, 7em);
 }
 
