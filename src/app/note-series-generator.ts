@@ -1,4 +1,4 @@
-import { Note } from "./app.component";
+import { Note } from "src/app/note";
 
 export function generateNotesSeries(
   n: number,
@@ -75,10 +75,8 @@ function generateUpperRange(currentNote: Note, n, series = []): Note[] {
         currentNote.pitchNames,
         incrementPitchValue
       ),
-      index: currentNote.index + 1,
       octave: getOctave(getNextFrequency(currentNote.frequency)),
-      normalizedDuration: 0,
-      normalizedStart: 0
+      normalizedDuration: 0
     },
     n - 1,
     series
@@ -122,10 +120,8 @@ function generateLowerRange(currentNote: Note, n, series = []): Note[] {
         currentNote.pitchNames,
         decrementPitchValue
       ),
-      index: currentNote.index + 1,
       octave: getOctave(currentNote.frequency * Math.pow(2, -1 / 12)),
-      normalizedDuration: 0,
-      normalizedStart: 0
+      normalizedDuration: 0
     },
     n - 1,
     series

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { Score } from "src/app/score";
 import { Measure } from "../measure";
-import { Note } from "src/app/app.component";
+import { Note } from "src/app/note";
 import { playPhrase } from "../music-player";
 import { AfterViewInit } from "@angular/core";
 import { ElementRef } from "@angular/core";

@@ -1,7 +1,7 @@
 import { Sound } from "./sound";
 import { Score } from "./score";
 import { ReplaySubject, Subject } from "rxjs";
-import { Note } from "./app.component";
+import { Note } from "./note";
 import { generateNotesSeries } from "./note-series-generator";
 import { Measure } from "./measure";
 
@@ -23,7 +23,7 @@ export function playPhrase(score: Score) {
     (<any>window).webkitAudioContext)();
 
   s.subscribe(note => {
-    playBell(audioContext)(note.frequency)(note.duration * 0.9);
+    playBell(audioContext)(note.frequency)(note.duration);
   });
 }
 

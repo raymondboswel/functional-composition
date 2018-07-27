@@ -7,15 +7,7 @@ import { Subject, ReplaySubject, Observable, timer, of, from } from "rxjs";
 import { mergeMap, concatMap, map } from "rxjs/operators";
 import { skip, filter } from "rxjs/operators";
 import { playPhrase } from "./music-player";
-
-export interface Note {
-  frequency?: number;
-  index?: number;
-  pitchNames: string[];
-  octave: number;
-  normalizedDuration?: number; // A number constrained to 1/8, 1/4, 1/2, 1/3, 1, 2, etc.
-  normalizedStart?: number; // At what point in the measure does the note start.
-}
+import { Note } from "./note";
 
 @Component({
   selector: "app-root",
