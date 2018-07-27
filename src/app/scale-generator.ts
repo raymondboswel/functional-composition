@@ -1,4 +1,4 @@
-import { Note } from "./app.component";
+import { Note } from "./models/note";
 
 export function getMajorKey(chromaticSeries: Note[], key: string): Note[] {
   switch (key) {
