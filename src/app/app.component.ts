@@ -1,4 +1,4 @@
-import { Score } from "./score";
+import { Score } from "./models/score";
 import { Component, OnInit } from "@angular/core";
 import { generateNotesSeries } from "./note-series-generator";
 import { getMajorKey, getTonicScale } from "./scale-generator";
@@ -7,7 +7,7 @@ import { Subject, ReplaySubject, Observable, timer, of, from } from "rxjs";
 import { mergeMap, concatMap, map } from "rxjs/operators";
 import { skip, filter } from "rxjs/operators";
 import { playPhrase } from "./music-player";
-import { Note } from "./note";
+import { Note } from "./models/note";
 
 @Component({
   selector: "app-root",

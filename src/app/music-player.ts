@@ -1,9 +1,9 @@
-import { Sound } from "./sound";
-import { Score } from "./score";
+import { Sound } from "./models/sound";
+import { Score } from "./models/score";
 import { ReplaySubject, Subject } from "rxjs";
-import { Note } from "./note";
+import { Note } from "./models/note";
 import { generateNotesSeries } from "./note-series-generator";
-import { Measure } from "./measure";
+import { Measure } from "./models/measure";
 
 export function playPhrase(score: Score) {
   const s: Subject<Sound> = new ReplaySubject();
@@ -49,11 +49,11 @@ function denormalizeNote() {
   };
 }
 
-export function denormalizeDuration(bpm: number, note: Note) {
+function denormalizeDuration(bpm: number, note: Note) {
   return ((note.normalizedDuration * bpm) / 60) * 1000;
 }
 
-export function getFrequency(referenceNotes: Note[], note: Note) {
+function getFrequency(referenceNotes: Note[], note: Note) {
   const frequency = referenceNotes.find(
     refNote =>
       refNote.octave == note.octave &&
@@ -62,7 +62,7 @@ export function getFrequency(referenceNotes: Note[], note: Note) {
   return frequency;
 }
 
-export function concatMeasures(measures: Measure[]): Note[] {
+function concatMeasures(measures: Measure[]): Note[] {
   return measures.reduce(
     (all: Note[], measure: Measure) => all.concat(measure.notes),
     []

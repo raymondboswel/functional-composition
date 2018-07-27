@@ -1,4 +1,4 @@
-import { Note } from "src/app/note";
+import { Note } from "src/app/models/note";
 
 export function generateNotesSeries(
   n: number,
