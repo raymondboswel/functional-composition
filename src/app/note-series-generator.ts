@@ -22,25 +22,25 @@ function setOctave(note: Note) {
 }
 
 export function getOctave(frequency: number) {
-  if (inclusiveBetween(frequency, 2093, 3951)) {
+  if (inclusiveBetween(Math.floor(frequency), 2093, 3951)) {
     return 7;
   }
-  if (inclusiveBetween(frequency, 1046, 1975)) {
+  if (inclusiveBetween(Math.floor(frequency), 1046, 1975)) {
     return 6;
   }
-  if (inclusiveBetween(frequency, 523, 987)) {
+  if (inclusiveBetween(Math.floor(frequency), 523, 987)) {
     return 5;
   }
-  if (inclusiveBetween(frequency, 261, 493)) {
+  if (inclusiveBetween(Math.floor(frequency), 261, 493)) {
     return 4;
   }
-  if (inclusiveBetween(frequency, 130, 246)) {
+  if (inclusiveBetween(Math.floor(frequency), 130, 246)) {
     return 3;
   }
-  if (inclusiveBetween(frequency, 65, 123)) {
+  if (inclusiveBetween(Math.floor(frequency), 65, 123)) {
     return 2;
   }
-  if (inclusiveBetween(frequency, 32, 61)) {
+  if (inclusiveBetween(Math.floor(frequency), 32, 61)) {
     return 1;
   }
   if (inclusiveBetween(Math.floor(frequency), 16, 30)) {
@@ -50,6 +50,7 @@ export function getOctave(frequency: number) {
 }
 
 function inclusiveBetween(val: number, lower: number, upper: number) {
+  console.log(val, lower, upper, val >= lower && val <= upper ? true : false);
   return val >= lower && val <= upper ? true : false;
 }
 
@@ -122,7 +123,7 @@ function generateLowerRange(currentNote: Note, n, series = []): Note[] {
         decrementPitchValue
       ),
       index: currentNote.index + 1,
-      octave: getOctave(getNextFrequency(currentNote.frequency)),
+      octave: getOctave(currentNote.frequency * Math.pow(2, -1 / 12)),
       normalizedDuration: 0,
       normalizedStart: 0
     },

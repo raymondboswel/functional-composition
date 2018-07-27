@@ -1,11 +1,31 @@
 import { Score } from "./score";
 import { ReplaySubject, Subject } from "rxjs";
 import { Note } from "./app.component";
+import { generateNotesSeries } from "./note-series-generator";
+import { Measure } from "./measure";
 
 export function playPhrase(score: Score) {
+  console.log(score);
   const s: Subject<Note> = new ReplaySubject();
   // Observable.create(() => )
-  const notes = score.measures[0].notes;
+  let notes = score.measures.reduce(
+    (all: Note[], measure: Measure) => all.concat(measure.notes),
+    []
+  );
+
+  const series: Note[] = generateNotesSeries(28);
+  console.log(notes);
+  notes[0].normalizedStart = 0;
+
+  notes = notes.map(note => {
+    note.frequency = series.find(
+      refNote =>
+        refNote.octave == note.octave &&
+        refNote.pitchNames.includes(note.pitchNames[0])
+    ).frequency;
+    note.normalizedDuration = note.normalizedDuration * 2000;
+    return note;
+  });
 
   const normalizedNotes = notes.reduce((acc: Note[], note: Note) => {
     if (acc.length == 0) {
@@ -23,11 +43,15 @@ export function playPhrase(score: Score) {
 
   normalizedNotes.forEach(note =>
     setTimeout(() => {
+      console.log(note);
       s.next(note);
     }, note.normalizedStart)
   );
 
-  s.asObservable().subscribe(note => {
+  const audioContext: AudioContext = new ((<any>window).AudioContext ||
+    (<any>window).webkitAudioContext)();
+
+  s.subscribe(note => {
     console.log(
       "subsc " +
         note.pitchNames[0] +
@@ -38,45 +62,46 @@ export function playPhrase(score: Score) {
         ":" +
         note.frequency
     );
-    this.playBell()(note.frequency)(note.normalizedDuration * 0.9);
+
+    playBell(audioContext)(note.frequency)(note.normalizedDuration * 0.9);
   });
 }
 
-export function playBell() {
+export function playBell(audioContext) {
   return (frequency: number) => (duration: number) => {
     const oscillators = [];
-    this.playFrequency(-0.1)(frequency)(duration);
-    this.playFrequency(-0.85)(2 * frequency)(duration);
+    playFrequency(audioContext, -0.1)(frequency)(duration);
+    playFrequency(audioContext, -0.85)(2 * frequency)(duration);
 
-    this.playFrequency(-0.95)(3 * frequency)(duration);
+    playFrequency(audioContext, -0.95)(3 * frequency)(duration);
     // this.playFrequency(-0.89)(4 * frequency)(duration);
     // this.playFrequency(-0.97)(5 * frequency)(duration);
     // this.playFrequency(-0.99)(6 * frequency)(duration);
   };
 }
 
-export function playFrequency(gain = 0) {
+export function playFrequency(audioContext, gain = 0) {
   return (frequency: number) => (duration: number) => {
-    const gainNode: GainNode = this.audioContext.createGain();
-    const oscillator: OscillatorNode = this.audioContext.createOscillator();
+    const gainNode: GainNode = audioContext.createGain();
+    const oscillator: OscillatorNode = audioContext.createOscillator();
     oscillator.frequency.value = frequency; // value in hertz
     oscillator.type = "sine";
 
     gainNode.gain.value = -1;
 
-    oscillator.connect(this.audioContext.destination);
+    oscillator.connect(audioContext.destination);
     oscillator.connect(gainNode);
-    gainNode.connect(this.audioContext.destination);
+    gainNode.connect(audioContext.destination);
     gainNode.gain.exponentialRampToValueAtTime(
       gain,
-      this.audioContext.currentTime + 0.05
+      audioContext.currentTime + 0.05
     );
     gainNode.gain.exponentialRampToValueAtTime(
       -1,
-      this.audioContext.currentTime + duration / 1000
+      audioContext.currentTime + duration / 1000
     );
 
-    oscillator.start(this.audioContext.currentTime + 0.01);
-    oscillator.stop(this.audioContext.currentTime + duration / 1000);
+    oscillator.start(audioContext.currentTime + 0.01);
+    oscillator.stop(audioContext.currentTime + duration / 1000);
   };
 }
