@@ -22,35 +22,35 @@ function setOctave(note: Note) {
 }
 
 export function getOctave(frequency: number) {
-  if (between(frequency, 3520, 7040)) {
+  if (inclusiveBetween(frequency, 2093, 3951)) {
+    return 7;
+  }
+  if (inclusiveBetween(frequency, 1046, 1975)) {
     return 6;
   }
-  if (between(frequency, 1760, 3520)) {
-    return 6;
-  }
-  if (between(frequency, 880, 1760)) {
+  if (inclusiveBetween(frequency, 523, 987)) {
     return 5;
   }
-  if (between(frequency, 440, 880)) {
+  if (inclusiveBetween(frequency, 261, 493)) {
     return 4;
   }
-  if (between(frequency, 220, 440)) {
+  if (inclusiveBetween(frequency, 130, 246)) {
     return 3;
   }
-  if (between(frequency, 110, 220)) {
+  if (inclusiveBetween(frequency, 65, 123)) {
     return 2;
   }
-  if (between(frequency, 55, 110)) {
+  if (inclusiveBetween(frequency, 32, 61)) {
     return 1;
   }
-  if (between(frequency, 27.5, 55)) {
+  if (inclusiveBetween(Math.floor(frequency), 16, 30)) {
     return 0;
   }
   return -1;
 }
 
-function between(val: number, lower: number, upper: number) {
-  return val >= lower && val < upper ? true : false;
+function inclusiveBetween(val: number, lower: number, upper: number) {
+  return val >= lower && val <= upper ? true : false;
 }
 
 function removeDuplicates(arr: Note[]): Note[] {

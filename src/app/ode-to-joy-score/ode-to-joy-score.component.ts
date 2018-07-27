@@ -10,12 +10,16 @@ import { Note } from "src/app/app.component";
 })
 export class OdeToJoyScoreComponent implements OnInit {
   @ViewChild("score") inputScore: HTMLDivElement;
-  score: Score = { measures: [] };
   constructor() {}
 
   ngOnInit() {
     const inputMeasures = Array.from(this.inputScore.childNodes);
-    inputMeasures.map((measure: Node) => {
+    const score: Score = {
+      measures: this.sheetToScore(inputMeasures);
+    };
+  }
+  sheetToScore(sheet: Node[]): Measure[] {
+    return sheet.map((measure: Node) => {
       const newMeasure: Measure = { timeSignature: "4/4", notes: [] };
       const notes = Array.from(measure.childNodes);
       newMeasure.notes = notes
@@ -31,6 +35,7 @@ export class OdeToJoyScoreComponent implements OnInit {
           };
           return note;
         });
+      return newMeasure;
     });
   }
 }
