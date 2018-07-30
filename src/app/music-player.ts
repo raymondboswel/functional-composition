@@ -1,12 +1,20 @@
 import { Sound } from "./models/sound";
 import { Score } from "./models/score";
-import { ReplaySubject, Subject } from "rxjs";
+import {
+  ReplaySubject,
+  Subject,
+  Subscription,
+  Observable,
+  never,
+  BehaviorSubject
+} from "rxjs";
+import { switchMap, map } from "rxjs/operators";
 import { Note } from "./models/note";
 import { generateNotesSeries } from "./note-series-generator";
 import { Measure } from "./models/measure";
 
-export function playPhrase(score: Score) {
-  const s: Subject<Sound> = new ReplaySubject();
+export function scoreToSubject(score: Score): Subject<Sound> {
+  const s: Subject<Sound> = new Subject();
   const notes = concatMeasures(score.measures);
 
   const sounds: Sound[] = notes
@@ -19,11 +27,16 @@ export function playPhrase(score: Score) {
     }, sound.startTime)
   );
 
+  return s;
+}
+
+export function playScore(score: Score) {
   const audioContext: AudioContext = new ((<any>window).AudioContext ||
     (<any>window).webkitAudioContext)();
 
-  s.subscribe(note => {
-    playBell(audioContext)(note.frequency)(note.duration);
+  scoreToSubject(score).subscribe(sound => {
+    playBell(audioContext)(sound.frequency)(sound.duration);
+    console.log(sound);
   });
 }
 

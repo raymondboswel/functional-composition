@@ -1,0 +1,31 @@
+<h2>Chromatic Scale</h2>
+<div >
+  <button (click)="generateChromaticScale()" mat-button>Generate chromatic scale</button>
+  <mat-form-field >
+      <input matInput placeholder="Reference frequency" [(ngModel)]="referenceFrequency">
+    </mat-form-field>
+</div>
+<div *ngIf="chromaticScale" style="overflow-x: hidden">
+  <p *ngFor="let n of chromaticScale" style="overflow-x: hidden; display: inline; margin-right: 5px">{{n.pitchNames[1] ? n.pitchNames[1] : n.pitchNames[0] }}</p>
+</div>
+
+<h2 style="margin-bottom: 0px" *ngIf="chromaticScale">C Major scale</h2>
+<div *ngIf="chromaticScale">
+  <button (click)="filterNotes()" mat-button>Filter to get C scale</button>
+</div>
+<div *ngIf="cMajorKey" style="overflow-x: hidden">
+    <p *ngFor="let n of cMajorKey" style="overflow-x: hidden; display: inline; margin-right: 5px">{{n.pitchNames[1] ? n.pitchNames[1] : n.pitchNames[0] }}</p>
+    <div >
+      <button (click)="printToHtml()" mat-button>Print to screen</button>
+    </div>
+</div>
+<div *ngIf="score" class="sheet-music">
+  <div *ngFor="let measure of score.measures" class="bar">
+    <div class="stave-header"></div>
+    <div *ngFor="let note of measure.notes" [class]="note.pitchNames[0] + note.octave + ' quarter-note'"></div>      
+    <div class="bar-line" aria-label="bar-line"></div>
+  </div>
+</div>
+    <div *ngIf="score">
+      <button (click)="playNotes()" mat-button>Play</button>
+    </div>

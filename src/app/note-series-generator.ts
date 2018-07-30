@@ -5,7 +5,7 @@ export function generateNotesSeries(
   referenceAFrequency = 440
 ): Note[] {
   const referenceA = {
-    frequency: 440,
+    frequency: referenceAFrequency,
     pitchNames: ["A"],
     index: 0,
     octave: 4,
@@ -17,40 +17,27 @@ export function generateNotesSeries(
   );
 }
 
+function generateUpperRange(currentNote: Note, n, series = []): Note[] {
+  series.push(currentNote);
+  if (n == 0) {
+    return series;
+  }
+  return generateUpperRange(generateHigherNote(currentNote), n - 1, series);
+}
+
+function generateLowerRange(currentNote: Note, n, series = []): Note[] {
+  series.push(currentNote);
+  if (n == 0) {
+    return series.reverse();
+  }
+  return generateLowerRange(generateLowerNote(currentNote), n - 1, series);
+}
+
 function setOctave(note: Note) {
   return { ...note, octave: getOctave(note.frequency) };
 }
 
-export function getOctave(frequency: number) {
-  if (inclusiveBetween(Math.floor(frequency), 2093, 3951)) {
-    return 7;
-  }
-  if (inclusiveBetween(Math.floor(frequency), 1046, 1975)) {
-    return 6;
-  }
-  if (inclusiveBetween(Math.floor(frequency), 523, 987)) {
-    return 5;
-  }
-  if (inclusiveBetween(Math.floor(frequency), 261, 493)) {
-    return 4;
-  }
-  if (inclusiveBetween(Math.floor(frequency), 130, 246)) {
-    return 3;
-  }
-  if (inclusiveBetween(Math.floor(frequency), 65, 123)) {
-    return 2;
-  }
-  if (inclusiveBetween(Math.floor(frequency), 32, 61)) {
-    return 1;
-  }
-  if (inclusiveBetween(Math.floor(frequency), 16, 30)) {
-    return 0;
-  }
-  return -1;
-}
-
 function inclusiveBetween(val: number, lower: number, upper: number) {
-  console.log(val, lower, upper, val >= lower && val <= upper ? true : false);
   return val >= lower && val <= upper ? true : false;
 }
 
@@ -60,26 +47,6 @@ function removeDuplicates(arr: Note[]): Note[] {
   }
   return [arr[0]].concat(
     removeDuplicates(arr.filter(n => n.frequency != arr[0].frequency))
-  );
-}
-
-function generateUpperRange(currentNote: Note, n, series = []): Note[] {
-  series.push(currentNote);
-  if (n == 0) {
-    return series;
-  }
-  return generateUpperRange(
-    {
-      frequency: getNextFrequency(currentNote.frequency),
-      pitchNames: getNextNameInSeries(
-        currentNote.pitchNames,
-        incrementPitchValue
-      ),
-      octave: getOctave(getNextFrequency(currentNote.frequency)),
-      normalizedDuration: 0
-    },
-    n - 1,
-    series
   );
 }
 
@@ -108,24 +75,57 @@ function decrementPitchValue(currentPitchValue: number): number {
   return currentPitchValue == 0 ? 11 : currentPitchValue - 1;
 }
 
-function generateLowerRange(currentNote: Note, n, series = []): Note[] {
-  series.push(currentNote);
-  if (n == 0) {
-    return series.reverse();
+function generateHigherNote(currentNote): Note {
+  const nextFrequency = getNextFrequency(currentNote.frequency);
+  return {
+    frequency: nextFrequency,
+    pitchNames: getNextNameInSeries(
+      currentNote.pitchNames,
+      incrementPitchValue
+    ),
+    octave: getOctave(nextFrequency),
+    normalizedDuration: 0
+  };
+}
+
+function generateLowerNote(currentNote): Note {
+  return {
+    frequency: currentNote.frequency * Math.pow(2, -1 / 12),
+    pitchNames: getNextNameInSeries(
+      currentNote.pitchNames,
+      decrementPitchValue
+    ),
+    octave: getOctave(currentNote.frequency * Math.pow(2, -1 / 12)),
+    normalizedDuration: 0
+  };
+}
+
+function getOctave(frequency: number) {
+  if (inclusiveBetween(Math.floor(frequency), 1976, 3951)) {
+    return 7;
   }
-  return generateLowerRange(
-    {
-      frequency: currentNote.frequency * Math.pow(2, -1 / 12),
-      pitchNames: getNextNameInSeries(
-        currentNote.pitchNames,
-        decrementPitchValue
-      ),
-      octave: getOctave(currentNote.frequency * Math.pow(2, -1 / 12)),
-      normalizedDuration: 0
-    },
-    n - 1,
-    series
-  );
+  if (inclusiveBetween(Math.floor(frequency), 988, 1975)) {
+    return 6;
+  }
+  if (inclusiveBetween(Math.floor(frequency), 494, 987)) {
+    return 5;
+  }
+  if (inclusiveBetween(Math.floor(frequency), 247, 493)) {
+    return 4;
+  }
+  if (inclusiveBetween(Math.floor(frequency), 124, 246)) {
+    return 3;
+  }
+  if (inclusiveBetween(Math.floor(frequency), 62, 123)) {
+    return 2;
+  }
+  if (inclusiveBetween(Math.floor(frequency), 31, 61)) {
+    return 1;
+  }
+  if (inclusiveBetween(Math.floor(frequency), 16, 30)) {
+    return 0;
+  }
+  return -1;
 }
 
 const pitchValues = [
@@ -135,9 +135,7 @@ const pitchValues = [
   { pitchName: "Bb", pitchValue: 1 },
 
   { pitchName: "B", pitchValue: 2 },
-  { pitchName: "Cb", pitchValue: 2 },
 
-  { pitchName: "B#", pitchValue: 3 },
   { pitchName: "C", pitchValue: 3 },
 
   { pitchName: "C#", pitchValue: 4 },
@@ -149,9 +147,7 @@ const pitchValues = [
   { pitchName: "Eb", pitchValue: 6 },
 
   { pitchName: "E", pitchValue: 7 },
-  { pitchName: "Fb", pitchValue: 7 },
 
-  { pitchName: "E#", pitchValue: 8 },
   { pitchName: "F", pitchValue: 8 },
 
   { pitchName: "F#", pitchValue: 9 },

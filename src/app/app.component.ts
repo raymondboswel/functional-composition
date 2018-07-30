@@ -6,7 +6,6 @@ import { delay } from "q";
 import { Subject, ReplaySubject, Observable, timer, of, from } from "rxjs";
 import { mergeMap, concatMap, map } from "rxjs/operators";
 import { skip, filter } from "rxjs/operators";
-import { playPhrase } from "./music-player";
 import { Note } from "./models/note";
 
 @Component({
