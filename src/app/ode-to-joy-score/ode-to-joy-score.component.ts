@@ -41,7 +41,7 @@ export class OdeToJoyScoreComponent implements AfterViewInit {
     const audioContext: AudioContext = new ((<any>window).AudioContext ||
       (<any>window).webkitAudioContext)();
 
-    const subject = scoreToSubject(this.score);
+    const subject = scoreToSubject(this.score, 140);
 
     this.pause$ = new Subject<Boolean>();
     this.pausable = this.pause$.pipe(

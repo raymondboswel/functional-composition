@@ -13,12 +13,12 @@ import { Note } from "./models/note";
 import { generateNotesSeries } from "./note-series-generator";
 import { Measure } from "./models/measure";
 
-export function scoreToSubject(score: Score): Subject<Sound> {
+export function scoreToSubject(score: Score, bpm: number): Subject<Sound> {
   const s: Subject<Sound> = new Subject();
   const notes = concatMeasures(score.measures);
 
   const sounds: Sound[] = notes
-    .map(denormalizeNote()(generateNotesSeries(28))(120))
+    .map(denormalizeNote()(generateNotesSeries(28))(bpm))
     .reduce(notesTemporalLocationReducerFn, []);
 
   sounds.forEach(sound =>
@@ -30,11 +30,11 @@ export function scoreToSubject(score: Score): Subject<Sound> {
   return s;
 }
 
-export function playScore(score: Score) {
+export function playScore(score: Score, bpm: number) {
   const audioContext: AudioContext = new ((<any>window).AudioContext ||
     (<any>window).webkitAudioContext)();
 
-  scoreToSubject(score).subscribe(sound => {
+  scoreToSubject(score, bpm).subscribe(sound => {
     playBell(audioContext)(sound.frequency)(sound.duration);
     console.log(sound);
   });
@@ -61,7 +61,7 @@ function denormalizeNote() {
 }
 
 function denormalizeDuration(bpm: number, note: Note) {
-  return ((note.normalizedDuration * bpm) / 60) * 1000;
+  return ((note.normalizedDuration * 240) / bpm) * 1000;
 }
 
 function getFrequency(referenceNotes: Note[], note: Note) {
@@ -80,12 +80,21 @@ function concatMeasures(measures: Measure[]): Note[] {
   );
 }
 
+export function playTone(audioContext) {
+  return (frequency: number) => (duration: number) => {
+    const oscillators = [];
+    playFrequency(audioContext, -0.1)(frequency)(duration);
+  };
+}
+
 export function playBell(audioContext) {
   return (frequency: number) => (duration: number) => {
     const oscillators = [];
     playFrequency(audioContext, -0.1)(frequency)(duration);
     playFrequency(audioContext, -0.85)(2 * frequency)(duration);
     playFrequency(audioContext, -0.95)(3 * frequency)(duration);
+    playFrequency(audioContext, -0.95)(4.2 * frequency)(duration);
+    playFrequency(audioContext, -0.95)(5.5 * frequency)(duration);
   };
 }
 

@@ -27,5 +27,7 @@
   </div>
 </div>
     <div *ngIf="score">
+      <button (click)="playSingleTone()">Play tone</button>
+      <button (click)="playBell()">Play Bell</button>
       <button (click)="playNotes()" mat-button>Play</button>
     </div>
