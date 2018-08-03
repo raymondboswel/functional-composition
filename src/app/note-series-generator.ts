@@ -12,6 +12,7 @@ export function generateNotesSeries(
     normalizedDuration: 0,
     normalizedStart: 0
   };
+  // Demo: Recursion
   return removeDuplicates(
     generateLowerRange(referenceA, n).concat(generateUpperRange(referenceA, n))
   );

@@ -80,6 +80,7 @@ function concatMeasures(measures: Measure[]): Note[] {
   );
 }
 
+// Demo: Play Tone
 export function playTone(audioContext) {
   return (frequency: number) => (duration: number) => {
     const oscillators = [];
@@ -87,6 +88,7 @@ export function playTone(audioContext) {
   };
 }
 
+// Demo: Play Bell
 export function playBell(audioContext) {
   return (frequency: number) => (duration: number) => {
     const oscillators = [];

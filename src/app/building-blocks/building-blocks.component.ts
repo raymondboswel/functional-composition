@@ -32,7 +32,6 @@ export class BuildingBlocksComponent implements OnInit {
   }
 
   printToHtml() {
-    console.log(this.cMajorScale);
     const c4Index = this.cMajorScale.findIndex(
       n => n.octave == 4 && n.pitchNames.includes("C")
     );
@@ -75,18 +74,6 @@ export class BuildingBlocksComponent implements OnInit {
   }
 
   playBell() {
-    this.cMajorScale = getTonicScale(this.cMajorKey, "C").map(n => {
-      return { ...n, normalizedDuration: 0.2 };
-    });
-    const c4Index = this.cMajorScale.findIndex(
-      n => n.octave == 4 && n.pitchNames.includes("C")
-    );
-    const audioContext: AudioContext = new ((<any>window).AudioContext ||
-      (<any>window).webkitAudioContext)();
-    playBell(audioContext)(this.cMajorScale[c4Index].frequency)(3000);
-  }
-
-  playBellNote() {
     this.cMajorScale = getTonicScale(this.cMajorKey, "C").map(n => {
       return { ...n, normalizedDuration: 0.2 };
     });
