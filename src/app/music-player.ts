@@ -17,6 +17,35 @@ export function scoreToSubject(score: Score, bpm: number): Subject<Sound> {
   const s: Subject<Sound> = new Subject();
   const notes = concatMeasures(score.measures);
 
+  // Before:
+
+  // const series: Note[] = generateNotesSeries(28);
+  // notes[0].normalizedStart = 0;
+
+  // notes = notes.map(note => {
+  //   note.frequency = series.find(
+  //     refNote =>
+  //       refNote.octave == note.octave &&
+  //       refNote.pitchNames.includes(note.pitchNames[0])
+  //   ).frequency;
+  //   note.normalizedDuration = note.normalizedDuration * 2000;
+  //   return note;
+  // });
+
+  // const normalizedNotes = notes.reduce((acc: Note[], note: Note) => {
+  //   if (acc.length == 0) {
+  //     return [note];
+  //   } else {
+  //     const previousNote = acc[acc.length - 1];
+  //     const startTime =
+  //       previousNote.normalizedStart + previousNote.normalizedDuration;
+  //     console.log(startTime);
+  //     note.normalizedStart = startTime;
+
+  //     return [...acc, note];
+  //   }
+  // }, []);
+
   const sounds: Sound[] = notes
     .map(denormalizeNote()(generateNotesSeries(28))(bpm))
     .reduce(notesTemporalLocationReducerFn, []);
