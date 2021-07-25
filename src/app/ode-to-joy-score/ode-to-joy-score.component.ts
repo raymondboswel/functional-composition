@@ -24,7 +24,7 @@ export class OdeToJoyScoreComponent implements AfterViewInit {
   ngAfterViewInit() {
     console.log(this.inputScore);
     const inputMeasures: any = Array.from(
-      this.inputScore.nativeElement.childNodes
+      this.inputScore.nativeElement.children
     );
     this.score = {
       measures: this.sheetToScore(inputMeasures)
@@ -58,10 +58,10 @@ export class OdeToJoyScoreComponent implements AfterViewInit {
     this.pause$.next(false); // starting source streaming
   }
 
-  sheetToScore(sheet: Node[]): Measure[] {
-    return sheet.map((measure: Node) => {
+  sheetToScore(sheet: Element[]): Measure[] {
+    return sheet.map((measure: Element) => {
       const newMeasure: Measure = { timeSignature: "4/4", notes: [] };
-      const notes = Array.from(measure.childNodes);
+      const notes = Array.from(measure.children);
       newMeasure.notes = notes
         .map(n => {
           return n.attributes.getNamedItem("class").value.split(" ");
