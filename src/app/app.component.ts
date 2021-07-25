@@ -31,30 +31,5 @@ export class AppComponent implements OnInit {
     return { ...note, normalizedDuration: duration };
   }
 
-  ngOnInit() {
-    // const series: Note[] = generateNotesSeries(28);
-    // console.log("note series");
-    // console.log(series);
-    // const cMajorKey: Note[] = getMajorKey(series, "C");
-    // const cMajorScale: Note[] = getTonicScale(cMajorKey, "C");
-    // console.log("Cmajor");
-    // console.log(cMajorScale);
-    // const c4Index = cMajorScale.findIndex(
-    //   n => n.octave == 4 && n.pitchNames.includes("C")
-    // );
-    // let notes = cMajorScale.slice(c4Index, c4Index + 18);
-    // notes = notes.map(n => {
-    //   return { ...n, normalizedDuration: 0.5 * 1000 };
-    // });
-    // console.log(notes);
-    // const score: Score = {
-    //   measures: [
-    //     {
-    //       timeSignature: "4/4",
-    //       notes: notes
-    //     }
-    //   ]
-    // };
-    // playPhrase(score);
-  }
+  ngOnInit() {}
 }

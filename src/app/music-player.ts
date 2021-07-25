@@ -48,6 +48,7 @@ export function scoreToSubject(score: Score, bpm: number): Subject<Sound> {
 
   const sounds: Sound[] = notes
     .map(denormalizeNote()(generateNotesSeries(28))(bpm))
+    .reverse()
     .reduce(notesTemporalLocationReducerFn, []);
 
   sounds.forEach(sound =>
