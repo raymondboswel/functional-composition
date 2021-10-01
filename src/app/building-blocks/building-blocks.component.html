@@ -24,8 +24,6 @@
 <div *ngIf="chromaticScale">
   <button (click)="filterNotes()" mat-button>Filter to get C scale</button>
 </div>
-
-{{ cMajorKey }}
 <div *ngIf="cMajorKey" style="overflow-x: hidden">
   <p
     *ngFor="let n of cMajorKey"

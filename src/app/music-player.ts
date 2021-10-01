@@ -15,7 +15,7 @@ import { Measure } from "./models/measure";
 
 export function scoreToSubject(score: Score, bpm: number): Subject<Sound> {
   const s: Subject<Sound> = new Subject();
-  const notes = concatMeasures(score.measures);
+  const notes = concatMeasures(score.measures).reverse();
 
   // Before:
 
